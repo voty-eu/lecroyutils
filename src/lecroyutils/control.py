@@ -181,3 +181,22 @@ class LecroyScope:
 
     def save_waveform_on_lecroy(self):
         self._action('app.SaveRecall.Waveform.SaveFile')
+
+    # Next methods are based on https://github.com/TeledyneLeCroy/lecroydso
+
+    @property
+    def horizontal_scale(self) -> float:
+        """Gets the Horizontal scale
+        Returns:
+            [float]: horizontal scale value
+        """
+        hor_scale = float(self._read('acq.Horizontal.horscale'))
+        return hor_scale
+
+    @horizontal_scale.setter
+    def horizontal_scale(self, hor_scale: float):
+        """Sets the horizontal scale of the DSO
+        Args:
+            hor_scale (float): Horizontal scale value
+        """
+        self._set('acq.Horizontal.horscale', hor_scale)
