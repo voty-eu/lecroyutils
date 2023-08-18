@@ -36,6 +36,24 @@ class TriggerType(Enum):
     internal = 'INTERNAL'
     tv = 'TV'
     pattern = 'PATTERN'
+    ext = 'EXT'
+
+
+class Source(Enum):
+    ext = 'EXT'
+    line = 'LINE'
+    math = 'MATH'
+    c1 = 'C1'
+    c2 = 'C2'
+    c3 = 'C3'
+    c4 = 'C4'
+
+
+class TriggerCoupling(Enum):
+    dc = 'DC'
+    ac = 'AC'
+    lfrej = 'LFREJ'
+    hfrej = 'HFREJ'
 
 
 class LecroyComm:
@@ -179,12 +197,12 @@ class LecroyScope:
             elif re.match(r"P\d.*", resource):
                 self.available_parameters.append(resource)
 
-    def check_source(self, source: str):
+    def check_source(self, source: Source):
         # currently no digital channels supported
         self.check_channel(source)
 
-    def check_channel(self, channel: str):
-        if channel.upper() not in self.available_channels:
+    def check_channel(self, channel: Source):
+        if channel.value not in self.available_channels:
             raise Exception(f'Channel {channel} not available.')
 
     def check_parameter(self, parameter: str):
@@ -207,10 +225,10 @@ class LecroyScope:
         return self._comm.read('app.Acquisition.Trigger.Source')
 
     @trigger_source.setter
-    def trigger_source(self, source: str):
-        if source.upper() not in ['EXT', 'LINE']:
+    def trigger_source(self, source: Source):
+        if source not in [Source.ext, Source.line]:
             self.check_source(source)
-        self._comm.set('app.Acquisition.Trigger.Source', source.upper())
+        self._comm.set('app.Acquisition.Trigger.Source', source.value)
 
     @property
     def trigger_type(self) -> TriggerType:
@@ -257,15 +275,15 @@ class LecroyScope:
         with open(file_path, 'wb') as f:
             f.write(self._screenshot_raw())
 
-    def _waveform_raw(self, source: str) -> bytes:
+    def _waveform_raw(self, source: Source) -> bytes:
         self.check_source(source)
-        self._comm.scope.write(f'{source}:WF?')
+        self._comm.scope.write(f'{source.value}:WF?')
         return self._comm.scope.read_raw()
 
-    def waveform(self, source: str) -> LecroyScopeData:
-        return LecroyScopeData(self._waveform_raw(source), source_desc=f'{source}-live')
+    def waveform(self, source: Source) -> LecroyScopeData:
+        return LecroyScopeData(self._waveform_raw(source), source_desc=f'{source.value}-live')
 
-    def save_waveform(self, source: str, file_path: AnyStr):
+    def save_waveform(self, source: Source, file_path: AnyStr):
         with open(file_path, 'wb') as f:
             f.write(self._waveform_raw(source))
 
@@ -408,7 +426,7 @@ class LecroyScope:
         return self._comm.read(f'app.Acquisition.Trigger.{source.upper()}Coupling')
 
     @trigger_coupling.setter
-    def trigger_coupling(self, coupling: str):
+    def trigger_coupling(self, coupling: TriggerCoupling):
         """Set the Trigger Coupling of the DSO
 
         Args:
@@ -422,7 +440,7 @@ class LecroyScope:
         if source.upper() not in ['EXT', *self.available_channels]:
             raise Exception(f'Invalid channel: {source}')
 
-        if coupling.upper() not in ('DC', 'AC', 'LFREJ', 'HFREJ'):
-            raise Exception(f'Trigger Coupling not valid: {coupling}')
+        # if coupling not in (TriggerCoupling.dc, 'AC', 'LFREJ', 'HFREJ'):
+        #     raise Exception(f'Trigger Coupling not valid: {coupling}')
 
-        self._comm.action('app.Acquisition.Trigger.' + source.upper() + 'Coupling = "' + coupling.upper() + '"')
+        self._comm.action('app.Acquisition.Trigger.' + source.upper() + 'Coupling = "' + coupling.value + '"')
