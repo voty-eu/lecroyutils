@@ -405,7 +405,7 @@ class LecroyScope:
         if source.upper() not in ['EXT', *self.available_channels]:
             raise Exception(f'Invalid channel: {source}')
 
-        return self._comm.read(f'app.Acquisition.Trigger.{source.upper()}Coupling')
+        return self._comm.read(f'app.Acquisition.Trigger.{source.upper()}.Coupling')
 
     @trigger_coupling.setter
     def trigger_coupling(self, coupling: str):
@@ -425,4 +425,33 @@ class LecroyScope:
         if coupling.upper() not in ('DC', 'AC', 'LFREJ', 'HFREJ'):
             raise Exception(f'Trigger Coupling not valid: {coupling}')
 
-        self._comm.action('app.Acquisition.Trigger.' + source.upper() + 'Coupling = "' + coupling.upper() + '"')
+        self._comm.action('app.Acquisition.Trigger.' + source.upper() + '.Coupling = "' + coupling.upper() + '"')
+
+    @property
+    def trigger_impedance(self) -> str:
+        source = self.trigger_source
+
+        if source.upper() not in ['EXT', *self.available_channels]:
+            raise Exception(f'Invalid channel: {source}')
+
+        return self._comm.read(f'app.Acquisition.Trigger.{source.upper()}.InputImpedance')
+
+    @trigger_impedance.setter
+    def trigger_impedance(self, impedance: str):
+        """Set the Trigger Impedance of the DSO
+
+        Args:
+            impedance (str): Sets the impedance.
+
+        Raises:
+            Exception: Invalid channel or impedance
+        """
+        source = self.trigger_source
+
+        if source.upper() not in ['EXT', *self.available_channels]:
+            raise Exception(f'Invalid channel: {source}')
+
+        if impedance.upper() not in ('50', '1M'):
+            raise Exception(f'Trigger Impedance not valid: {impedance}')
+
+        self._comm.action('app.Acquisition.Trigger.' + source.upper() + '.InputImpedance = "' + impedance.upper() + '"')
