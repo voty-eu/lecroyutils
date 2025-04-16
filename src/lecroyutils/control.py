@@ -454,4 +454,4 @@ class LecroyScope:
         if impedance.upper() not in ('50', '1M'):
             raise Exception(f'Trigger Impedance not valid: {impedance}')
 
-        self._comm.action('app.Acquisition.Trigger.' + source.upper() + '.InputImpedance = "' + impedance.upper() + '"')
+        self._comm.action('app.Acquisition.Trigger.' + source.upper() + '.InputImpedance = ' + impedance.upper() + '')
