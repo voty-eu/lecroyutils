@@ -436,22 +436,21 @@ class LecroyScope:
 
         return self._comm.read(f'app.Acquisition.Trigger.{source.upper()}.InputImpedance')
 
-    @trigger_impedance.setter
-    def trigger_impedance(self, impedance: str):
-        """Set the Trigger Impedance of the DSO
+    @property
+    def ext_coupling(self) -> str:
+        return self._comm.read('app.Acquisition.Horizontal.ExtCoupling')
+
+    @ext_coupling.setter
+    def ext_coupling(self, coupling: str):
+        """Set the Trigger Coupling of the DSO
 
         Args:
-            impedance (str): Sets the impedance.
+            coupling (str): Sets the coupling.
 
         Raises:
-            Exception: Invalid channel or impedance
+            Exception: Invalid channel or coupling
         """
-        source = self.trigger_source
+        if coupling.upper() not in ('DC50', 'DC1M'):
+            raise Exception(f'Trigger Coupling not valid: {coupling}')
 
-        if source.upper() not in ['EXT', *self.available_channels]:
-            raise Exception(f'Invalid channel: {source}')
-
-        if impedance.upper() not in ('50', '1M'):
-            raise Exception(f'Trigger Impedance not valid: {impedance}')
-
-        self._comm.action('app.Acquisition.Trigger.' + source.upper() + '.InputImpedance = ' + impedance.upper() + '')
+        self._comm.action('app.Acquisition.Horizontal.ExtCoupling = "' + coupling.upper() + '"')
