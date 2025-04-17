@@ -454,3 +454,21 @@ class LecroyScope:
             raise Exception(f'Trigger Coupling not valid: {coupling}')
 
         self._comm.action('app.Acquisition.Horizontal.ExtCoupling = "' + coupling.upper() + '"')
+
+    @property
+    def max_samples(self):
+        """Get the maximum number of samples
+
+        Returns:
+            int: Maximum number of samples
+        """
+        return int(self._comm.read('app.Acquisition.Horizontal.MaxSamples'))
+
+    @max_samples.setter
+    def max_samples(self, max_samples: int):
+        """Set the maximum number of samples
+
+        Args:
+            max_samples (int): Maximum number of samples
+        """
+        self._comm.set('app.Acquisition.Horizontal.MaxSamples', max_samples)
