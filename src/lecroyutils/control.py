@@ -472,3 +472,9 @@ class LecroyScope:
             max_samples (int): Maximum number of samples
         """
         self._comm.set('app.Acquisition.Horizontal.MaxSamples', max_samples)
+
+    def shutdown_instrument(self):
+        """Shutdown the instrument (if supported)
+        """
+        self._comm.action('app.Shutdown')
+
