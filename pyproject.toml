@@ -1,6 +1,26 @@
 [build-system]
-requires = [
-    "setuptools>=42",
-    "wheel"
-]
+requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "lecroyutils"
+version = "4.0.1"
+description = "Library to communicate and parse .trc files with/from LeCroy oscilloscopes."
+authors = [{ name = "Silas Bartel", email = "silas.a.bartel@gmail.com" }]
+readme = "README.md"
+requires-python = ">=3.6"
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["Parse", "LeCroy", "Scope", "Oscilloscope", "TRC"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Interface Engine/Protocol Translator",
+]
+dependencies = ["numpy", "python-vxi11"]
+
+[project.urls]
+Homepage = "https://github.com/sibartel/lecroyutils"
+"Bug Tracker" = "https://github.com/sibartel/lecroyutils/issues"
