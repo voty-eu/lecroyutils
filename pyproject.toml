@@ -9,7 +9,7 @@ description = "Library to communicate and parse .trc files with/from LeCroy osci
 authors = [{ name = "Silas Bartel", email = "silas.a.bartel@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.6"
-license = "MIT"
+license = "MIT AND BSD-2-Clause"
 license-files = ["LICENSE"]
 keywords = ["Parse", "LeCroy", "Scope", "Oscilloscope", "TRC"]
 classifiers = [
